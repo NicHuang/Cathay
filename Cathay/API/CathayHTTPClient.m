@@ -10,8 +10,7 @@
 
 @implementation CathayHTTPClient
 
-+(CathayHTTPClient *) sharedInstance
-{
++(CathayHTTPClient *) sharedInstance {
   static CathayHTTPClient *_sharedInstance = nil;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
@@ -23,10 +22,9 @@
 
 
 - (void)fetchAnimalData:(NSString *)urlString completion:(CathayHTTPClientLoginCompletionBlock)completion {
-
+  
   NSURL *dataURL = [NSURL URLWithString:urlString];
-  NSURLRequest *request = [NSURLRequest requestWithURL:dataURL];
-  NSURLSessionTask *task =[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+  NSURLSessionTask *task =[[NSURLSession sharedSession] dataTaskWithURL:dataURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
       if (!error) {
         NSDictionary *responseObject  = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -52,7 +50,6 @@
     }
   }];
   [task resume];
-  
 }
 
 @end

@@ -22,6 +22,11 @@
                                         barMetrics:UIBarMetricsDefault];
   
   [[UINavigationBar appearance] setShadowImage:[[UIImage alloc] init]];
+  [[UINavigationBar appearance] setTranslucent:NO];
+  
+  
+  
+//  self.navigationController.navigationBar.translucent = NO;
   
   return YES;
 }
