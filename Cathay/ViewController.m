@@ -22,7 +22,6 @@ static NSString * const APIURL = @"https://data.taipei/opendata/datalist/apiAcce
 @property (strong, nonatomic) NSCache *imageCache;
 @property (weak, nonatomic) IBOutlet UILabel *navTitle;
 
-
 @end
 
 @implementation ViewController{
@@ -30,7 +29,6 @@ static NSString * const APIURL = @"https://data.taipei/opendata/datalist/apiAcce
   CGFloat shyBarHeight;
   CGFloat snapHeight;
   NSUInteger *offset;
-
   BOOL snapToFull;
   BOOL snapToShy;
 }
@@ -51,15 +49,12 @@ static NSString * const APIURL = @"https://data.taipei/opendata/datalist/apiAcce
 
   self.tableView.delegate = self;
   self.tableView.dataSource = self;
-  self.tableView.bounces = NO;
-  
-  self.navigationController.navigationBar.translucent = NO;
-  
- // [self retrieveAnimalData:0];
-  [self retrieveAnimalsData:0];
+ // self.tableView.bounces = NO;
+
+  [self fetchAnimalsData:0];
 }
 
-- (void) retrieveAnimalsData:(NSUInteger)offset{
+- (void) fetchAnimalsData:(NSUInteger)offset{
   
   __block NSArray *animals = [NSArray array];
   NSString *dataUrl = [NSString stringWithFormat:APIURL, (unsigned long)offset];
@@ -75,34 +70,26 @@ static NSString * const APIURL = @"https://data.taipei/opendata/datalist/apiAcce
       NSLog(@"error");
     }
   }];
-
 }
 
 - (void)viewDidLayoutSubviews {
   [self.tableView setContentInset:UIEdgeInsetsMake(fullBarHeight, 0, 0, 0)];
 }
 
-- (void)scrollViewDidChangeAdjustedContentInset:(UIScrollView *)scrollView {
-  
-}
-
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+  // calcu alpha
+  CGFloat totalScroll = fullBarHeight - shyBarHeight;
+  CGFloat range = self.tableView.contentOffset.y + shyBarHeight; // set - 128
+  CGFloat alpha = -range/totalScroll;
+  self.navTitle.alpha = alpha;
   
-  NSLog(@"%@",NSStringFromCGPoint(scrollView.contentOffset));
+  // limit upward scroll range and resize nav bar
   CGFloat offset = self.tableView.contentOffset.y;
- 
   if (offset > -shyBarHeight) {
-      self.navTitle.alpha = 0;
-      [self setNavBarHeight:shyBarHeight];
+     [self setNavBarHeight:shyBarHeight];
      return;
   }
-  
-  if (offset == -fullBarHeight) {
-     self.navTitle.alpha = 1;
-  }
-
   [self setNavBarHeight:-offset];
- 
 }
 
 - (void) setNavBarHeight: (CGFloat)height {
@@ -130,11 +117,11 @@ static NSString * const APIURL = @"https://data.taipei/opendata/datalist/apiAcce
 }
 
 - (void) loadImage:(nonnull NSString *)imageUrl cell:(CathayTableViewCell *)cell {
-  NSLog(@"%@", imageUrl);
-  
+
+  // two exceptions 1: no pic url 2. url with empty pic
   if ([imageUrl isEqualToString:@""]) {
-    return;
     NSLog(@"image empty");
+    return;
   }
   
   if ([self.imageCache objectForKey:imageUrl] != nil) {
@@ -162,7 +149,7 @@ static NSString * const APIURL = @"https://data.taipei/opendata/datalist/apiAcce
    NSLog(@"%ld", (long)indexPath.row);
   if (indexPath.row == self.animals.count - 1 && self.bottomRefresh == NO) {
     self.bottomRefresh = YES;
-    [self retrieveAnimalsData:self.animals.count];
+    [self fetchAnimalsData:self.animals.count];
   }
 }
 
