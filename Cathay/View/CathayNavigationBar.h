@@ -12,6 +12,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CathayNavigationBar : UINavigationBar
 
+@property (nonatomic) CGFloat shyBarHeight;
+@property (nonatomic) CGFloat fullBarHeight;
+
+//- (CathayNavigationBar *)initWithNavBarWith:(CGFloat)width height:(CGFloat)height;
+
+
 @end
 
 NS_ASSUME_NONNULL_END

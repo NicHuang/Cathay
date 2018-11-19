@@ -49,8 +49,7 @@ static NSString * const APIURL = @"https://data.taipei/opendata/datalist/apiAcce
 
   self.tableView.delegate = self;
   self.tableView.dataSource = self;
- // self.tableView.bounces = NO;
-
+  self.tableView.bounces = NO;
   [self fetchAnimalsData:0];
 }
 
@@ -90,6 +89,11 @@ static NSString * const APIURL = @"https://data.taipei/opendata/datalist/apiAcce
      return;
   }
   [self setNavBarHeight:-offset];
+  
+}
+- (void)viewDidAppear:(BOOL)animated {
+  [super viewDidAppear:animated];
+
 }
 
 - (void) setNavBarHeight: (CGFloat)height {
@@ -120,7 +124,6 @@ static NSString * const APIURL = @"https://data.taipei/opendata/datalist/apiAcce
 
   // two exceptions 1: no pic url 2. url with empty pic
   if ([imageUrl isEqualToString:@""]) {
-    NSLog(@"image empty");
     return;
   }
   
@@ -146,7 +149,6 @@ static NSString * const APIURL = @"https://data.taipei/opendata/datalist/apiAcce
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-   NSLog(@"%ld", (long)indexPath.row);
   if (indexPath.row == self.animals.count - 1 && self.bottomRefresh == NO) {
     self.bottomRefresh = YES;
     [self fetchAnimalsData:self.animals.count];
@@ -155,7 +157,6 @@ static NSString * const APIURL = @"https://data.taipei/opendata/datalist/apiAcce
 
 /*
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-  /*
    if (scrollView == self.tableView) {
    CGFloat offset = self.tableView.contentOffset.y;
    
@@ -227,7 +228,7 @@ static NSString * const APIURL = @"https://data.taipei/opendata/datalist/apiAcce
  }];
  }
  
- /*
+ 
  - (void) loadImage:(nonnull NSString *)imageUrl cell:(CathayTableViewCell *)cell {
  NSLog(@"%@", imageUrl);
  if ([self.imageCache objectForKey:imageUrl] != nil) {
